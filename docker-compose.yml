@@ -1,0 +1,12 @@
+services:
+
+  postgres:
+    image: postgres:latest
+    container_name: rest-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: rest-db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+    ports:
+      - "5436:5432"
