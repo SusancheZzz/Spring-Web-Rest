@@ -12,14 +12,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Generated
-@Mapper(imports = LocalDate.class)
+@Mapper(componentModel = "spring", imports = LocalDate.class)
 public interface DepartmentMapper {
 
   DepartmentMapper INSTANCE = Mappers.getMapper(DepartmentMapper.class);
 
-  @Mapping(source = "leaderSurname", target = "leaderSurname")
+  @Mapping(source = "leaderId", target = "leaderId")
   @Mapping(source = "employeesNumber", target = "employeesNumber")
-  DepartmentReadDto mapEntityToRead(DepartmentEntity departmentEntity, String leaderSurname,
+  DepartmentReadDto mapEntityToRead(DepartmentEntity departmentEntity, Long leaderId,
     Integer employeesNumber);
 
   @Mapping(expression = "java(LocalDate.now())", target = "createdAt")

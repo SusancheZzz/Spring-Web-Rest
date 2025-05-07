@@ -23,4 +23,5 @@ public class DepartmentPaymentEntity {
 
   @Column(name = "common_payment")
   private Integer payment;
+
 }

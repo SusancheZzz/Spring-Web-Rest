@@ -15,8 +15,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,7 +29,6 @@ import lombok.Setter;
 @Table(name = "department", schema = "departments")
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class DepartmentEntity {
@@ -75,5 +74,21 @@ public class DepartmentEntity {
   public DepartmentEntity removeChildDepartment(DepartmentEntity departmentEntity) {
     childDepartment.remove(departmentEntity);
     return departmentEntity;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    DepartmentEntity that = (DepartmentEntity) o;
+    return Objects.equals(name, that.name) && Objects.equals(createdAt,
+      that.createdAt) && Objects.equals(isMain, that.isMain) && Objects.equals(
+      childDepartment, that.childDepartment);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(name, createdAt, isMain, childDepartment);
   }
 }

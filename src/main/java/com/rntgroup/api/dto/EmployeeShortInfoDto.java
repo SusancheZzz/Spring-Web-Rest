@@ -1,14 +1,9 @@
 package com.rntgroup.api.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record EmployeeShortInfoDto(
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class EmployeeShortInfoDto {
+  String name,
+  String surname
+) {
 
-  private String name;
-  private String surname;
 }

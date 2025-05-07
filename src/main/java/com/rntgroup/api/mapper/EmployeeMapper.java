@@ -12,7 +12,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 
-@Mapper(imports = {Gender.class, LocalDate.class})
+@Mapper(
+  componentModel = "spring",
+  imports = {Gender.class, LocalDate.class}
+)
 public interface EmployeeMapper {
 
   EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);

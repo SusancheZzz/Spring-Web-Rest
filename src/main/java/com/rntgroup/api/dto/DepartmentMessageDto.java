@@ -1,14 +1,8 @@
 package com.rntgroup.api.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public record DepartmentMessageDto(
+  Long id,
+  String name
+) {
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class DepartmentMessageDto {
-
-  private Long id;
-  private String name;
 }

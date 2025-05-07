@@ -5,7 +5,7 @@ import com.rntgroup.api.dto.EmployeeReadDto;
 import com.rntgroup.api.dto.EmployeeSaveDto;
 import com.rntgroup.api.dto.EmployeeShortInfoDto;
 import com.rntgroup.api.entity.EmployeeEntity;
-import com.rntgroup.api.exception.BadValuesInObjectException;
+import com.rntgroup.api.exception.PaymentNotValidException;
 import com.rntgroup.api.exception.UniqueAttributeAlreadyExistException;
 import com.rntgroup.api.mapper.EmployeeMapper;
 import com.rntgroup.api.repository.DepartmentRepository;
@@ -26,10 +26,10 @@ public class EmployeeService {
   private static final String EMPLOYEE_WITH_ID_NOT_FOUND = "Employee with id: %s not found";
   private final EmployeeRepository employeeRepository;
   private final DepartmentRepository departmentRepository;
-  private static final EmployeeMapper employeeMapper = EmployeeMapper.INSTANCE;
+  private final EmployeeMapper employeeMapper;
 
   public EmployeeReadDto getEmployeeInfo(Long employeeId) {
-    var foundEmployee = employeeRepository.findById(employeeId);
+    var foundEmployee = employeeRepository.findEmployeeById(employeeId);
 
     if (foundEmployee.isEmpty()) {
       throw new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId));
@@ -55,7 +55,7 @@ public class EmployeeService {
     var departmentName = getDepartmentName(departmentId);
 
     if (!checkLeaderPayment(employeeSaveDto.getPayment(), departmentId)) {
-      throw new BadValuesInObjectException("Employee's payment must be less than leader payment");
+      throw new PaymentNotValidException("Employee payment should not exceed that of their boss");
     }
 
     var foundByPhoneNumber = employeeRepository.findByPhoneNumber(employeeSaveDto.getPhoneNumber());
@@ -73,7 +73,7 @@ public class EmployeeService {
 
   @Transactional
   public EmployeeReadDto deleteEmployee(Long employeeId) {
-    var employee = employeeRepository.findById(employeeId);
+    var employee = employeeRepository.findEmployeeById(employeeId);
 
     if (employee.isEmpty()) {
       throw new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId));
@@ -94,8 +94,6 @@ public class EmployeeService {
     var employeeEntity = getEmployeeById(employeeId);
     var payment = employeeEditDto.getPayment();
 
-    checkPhoneNumberUniqueness(employeeEditDto);
-
     if (employeeEditDto.getIsLeader()) {
       var leaderInGroup = employeeRepository.findLeaderInDepartment(
         employeeEditDto.getDepartmentId());
@@ -109,7 +107,7 @@ public class EmployeeService {
       }
     } else {
       if (!checkLeaderPayment(employeeEditDto.getPayment(), employeeEditDto.getDepartmentId())) {
-        throw new BadValuesInObjectException("Payment is not valid");
+        throw new PaymentNotValidException("Employee payment should not exceed that of their boss");
       }
     }
 
@@ -127,8 +125,7 @@ public class EmployeeService {
   }
 
   public Integer getCommonPaymentForDepartment(Long departmentId) {
-    var payment = employeeRepository.commonPaymentForDepartment(departmentId);
-    return payment;
+    return employeeRepository.commonPaymentForDepartment(departmentId);
   }
 
   public EmployeeShortInfoDto getLeaderShortInfo(Long departmentId) {
@@ -170,20 +167,8 @@ public class EmployeeService {
     return leaderOpt.isEmpty() ? true : employeePayment < leaderOpt.get().getPayment();
   }
 
-  private void checkPhoneNumberUniqueness(EmployeeEditDto employeeEditDto)
-      throws UniqueAttributeAlreadyExistException {
-    var phoneNumber = employeeEditDto.getPhoneNumber();
-    var foundByPhoneNumber = employeeRepository.findByPhoneNumber(phoneNumber);
-
-    if (foundByPhoneNumber.isPresent()) {
-      throw new UniqueAttributeAlreadyExistException(
-        "Employee with this phone " + employeeEditDto.getPhoneNumber()
-          + "number already exist");
-    }
-  }
-
   private EmployeeEntity getEmployeeById(Long employeeId) {
-    return employeeRepository.findById(employeeId)
+    return employeeRepository.findEmployeeById(employeeId)
       .orElseThrow(
         () -> new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId)));
   }

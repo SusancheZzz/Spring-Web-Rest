@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS employees.employee
     id              BIGSERIAL PRIMARY KEY,
     surname         VARCHAR(128) NOT NULL,
     name            VARCHAR(128) NOT NULL,
-    father_name     VARCHAR(128),
+    patronymic      VARCHAR(128),
     gender          VARCHAR(16)  NOT NULL,
     birthday        DATE         NOT NULL,
     phone_number    VARCHAR(64)  NOT NULL UNIQUE,
@@ -48,6 +48,14 @@ CREATE TABLE IF NOT EXISTS employees.employee
     position        VARCHAR(128) NOT NULL,
     payment         INTEGER      NOT NULL,
     is_leader       BOOLEAN
+);
+
+--changeset susanchezzz:6
+CREATE TABLE IF NOT EXISTS departments.department_leaders
+(
+    id            BIGSERIAL PRIMARY KEY,
+    department_id BIGINT REFERENCES departments.department (id) ON DELETE CASCADE,
+    employee_id   BIGINT REFERENCES employees.employee (id) ON DELETE CASCADE
 );
 
 

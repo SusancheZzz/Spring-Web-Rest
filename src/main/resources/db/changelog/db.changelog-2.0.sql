@@ -32,7 +32,7 @@ SELECT d.id FROM departments.department d;
 
 --changeset susanchezzz:4
 INSERT INTO employees.employee
-(id, surname, name, father_name, gender, birthday, phone_number, department_id, employment_date, position, payment, is_leader)
+(id, surname, name, patronymic, gender, birthday, phone_number, department_id, employment_date, position, payment, is_leader)
 VALUES
     (1,  'Borisov',   'Boris',     'Borisovich',   'MALE',   '1973-03-14', '+7 (930) 364-01-64',     1,  '2009-08-13', 'Boss',               300000, true),
     (2,  'Igorev',    'Igor',      'Igorevich',    'MALE',   '1976-10-27', '+7 (950) 856-18-58',     1,  '2011-07-19', 'Boss deputy',        230000, false),
@@ -50,3 +50,15 @@ VALUES
     (14, 'Maximov',   'Maxim',     'Maximovich',   'MALE',   '1990-11-28', '+7 (920) 473-17-94',     5,  '2011-07-18', 'Middle Dev',         120000, false);
 
 SELECT SETVAL('employees.employee_id_seq', 14);
+
+--changeset susanchezzz:5
+INSERT INTO departments.department_leaders
+(id, department_id, employee_id)
+VALUES
+    (1,  1,  1),
+    (2,  2,  3),
+    (3,  3,  6),
+    (4,  4,  9),
+    (5, 5,  12);
+
+SELECT SETVAL('departments.department_leaders_id_seq', 5);

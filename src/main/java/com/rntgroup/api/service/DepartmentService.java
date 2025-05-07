@@ -28,7 +28,7 @@ public class DepartmentService {
   private static final String DEPARTMENT_WITH_NOT_FOUND = "Department with %s: %s not found";
   private final DepartmentRepository departmentRepository;
   private final EmployeeRepository employeeRepository;
-  private static final DepartmentMapper departmentMapper = DepartmentMapper.INSTANCE;
+  private final DepartmentMapper departmentMapper;
 
   public DepartmentReadDto findDepartmentById(Long departmentId) {
     var department = departmentRepository.findById(departmentId);
@@ -36,8 +36,13 @@ public class DepartmentService {
       throw new EntityNotFoundException(DEPARTMENT_WITH_NOT_FOUND.formatted("id", departmentId));
     }
     var departmentEntity = department.get();
+    var leaderOpt = employeeRepository.findLeaderInDepartment(departmentId);
 
-    return getReadDto(departmentEntity, departmentEntity.getId());
+    return getReadDto(
+      departmentEntity,
+      departmentEntity.getId(),
+      leaderOpt.get().getId()
+    );
   }
 
   public DepartmentReadDto findDepartmentByName(String name) {
@@ -46,8 +51,13 @@ public class DepartmentService {
       throw new EntityNotFoundException(DEPARTMENT_WITH_NOT_FOUND.formatted("name", name));
     }
     var departmentEntity = department.get();
+    var leaderOpt = employeeRepository.findLeaderInDepartment(departmentEntity.getId());
 
-    return getReadDto(departmentEntity, departmentEntity.getId());
+    return getReadDto(
+      departmentEntity,
+      departmentEntity.getId(),
+      leaderOpt.get().getId()
+    );
   }
 
   public CommonPaymentForDepartment getPaymentForDepartment(Long departmentId) {
@@ -65,7 +75,7 @@ public class DepartmentService {
     return new CommonPaymentForDepartment(departmentEntity.getName(), commonPayment);
   }
 
-  @Transactional(timeout = 30)
+  @Transactional
   public DepartmentReadDto saveDepartment(DepartmentSaveDto departmentSaveDto) {
     var departmentName = departmentSaveDto.getName();
     var department = departmentRepository.findByName(departmentName);
@@ -74,6 +84,13 @@ public class DepartmentService {
       throw new UniqueAttributeAlreadyExistException(
         "Department with name " + departmentName + " already exists");
     }
+
+    long leaderId = departmentSaveDto.getLeaderId();
+    var leaderOpt = employeeRepository.findEmployeeById(leaderId);
+    if (leaderOpt.isEmpty()) {
+      throw new EntityNotFoundException("Employee with id = " + leaderId + " not found");
+    }
+
     var newDepartment = departmentMapper.mapSaveToEntity(departmentSaveDto);
 
     if (departmentSaveDto.getParentDepartmentId().isPresent()) {
@@ -96,7 +113,14 @@ public class DepartmentService {
       departmentRepository.saveAndFlush(newDepartment);
     }
 
-    return getReadDto(newDepartment, newDepartment.getId());
+    employeeRepository.updateIsLeaderById(true, leaderId);
+    departmentRepository.addLeaderInDepartment(newDepartment.getId(), leaderId);
+
+    return getReadDto(
+      newDepartment,
+      newDepartment.getId(),
+      leaderId
+    );
   }
 
   @Transactional
@@ -107,13 +131,15 @@ public class DepartmentService {
       throw new EntityNotFoundException("Department with id " + departmentId + " does not exist");
     }
 
-    DepartmentEntity departmentEntity = departmentOpt.get();
+    var departmentEntity = departmentOpt.get();
     var employeesInDepartment = employeeRepository.findByDepartmentId(departmentId);
 
     if (!employeesInDepartment.isEmpty()) {
       throw new DepartmentStillHasEmployeesException("Department with id " + departmentId
         + " still has employees");
     }
+
+    var leaderId = employeeRepository.findLeaderInDepartment(departmentId).get().getId();
 
     if (departmentEntity.getIsMain()) {
       var nextMain = departmentEntity.removeChildDepartment(0);
@@ -133,7 +159,18 @@ public class DepartmentService {
       departmentRepository.deleteById(departmentId);
     }
 
-    return getReadDto(departmentEntity, departmentId);
+    //После удаления проверяем, руководит ли этот человек ещё каким-то департаментом.
+    //Если нет -- снимаем флажок лидера
+    long countDepartmentsOfLeader = employeeRepository.getCountDepartmentsOfLeaderById(leaderId);
+    if (countDepartmentsOfLeader == 0) {
+      employeeRepository.updateIsLeaderById(false, leaderId);
+    }
+
+    return getReadDto(
+      departmentEntity,
+      departmentId,
+      leaderId
+    );
   }
 
   @Transactional
@@ -143,17 +180,27 @@ public class DepartmentService {
     if (department.isEmpty()) {
       throw new EntityNotFoundException("Department with id " + departmentId + " does not exist");
     }
-    var departmentFoundByName = departmentRepository.findByName(departmentEditDto.getName());
+    var departmentFoundByName = departmentRepository.findByName(departmentEditDto.name());
     if (departmentFoundByName.isPresent()) {
       throw new UniqueAttributeAlreadyExistException(
-        "Department with name " + departmentEditDto.getName() + " already exists");
+        "Department with name " + departmentEditDto.name() + " already exists");
     }
     var departmentEntity = department.get();
     var updatedDepartment = departmentMapper.mapEditDtoToEntity(departmentEditDto,
       departmentEntity);
-    departmentRepository.saveAndFlush(updatedDepartment);
 
-    return getReadDto(departmentEntity, departmentId);
+    departmentRepository.saveAndFlush(updatedDepartment);
+    var leaderOpt = employeeRepository.findLeaderInDepartment(departmentId);
+    if (leaderOpt.isEmpty()) {
+      throw new EntityNotFoundException(
+        "Leader department with id = " + departmentId + " not found");
+    }
+
+    return getReadDto(
+      departmentEntity,
+      departmentId,
+      leaderOpt.get().getId()
+    );
   }
 
   public List<EmployeeShortInfoDto> findAllEmployeesInDepartment(Long departmentId) {
@@ -173,13 +220,11 @@ public class DepartmentService {
     return new DepartmentMessageDto(departmentId, department.getName());
   }
 
-  private DepartmentReadDto getReadDto(DepartmentEntity departmentEntity, Long departmentId) {
+  private DepartmentReadDto getReadDto(DepartmentEntity departmentEntity, Long departmentId,
+    Long leaderId) {
     int employeesNumber = employeeRepository.findByDepartmentId(departmentId).size();
-    String departmentLeaderSurname = employeeRepository.findLeaderInDepartment(departmentId)
-      .orElseThrow()
-      .getSurname();
 
-    return departmentMapper.mapEntityToRead(departmentEntity, departmentLeaderSurname,
+    return departmentMapper.mapEntityToRead(departmentEntity, leaderId,
       employeesNumber);
   }
 

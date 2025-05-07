@@ -16,9 +16,9 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
 
   @Query(
     value = """
-      INSERT INTO departments.parent_child_departments (parent_department_id, child_department_id) 
-      VALUES (:departmentId, :childId)
-    """,
+        INSERT INTO departments.parent_child_departments (parent_department_id, child_department_id)
+        VALUES (:departmentId, :childId)
+      """,
     nativeQuery = true
   )
   @Modifying
@@ -33,4 +33,24 @@ public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Lo
       """
   )
   DepartmentEntity findDepartmentWithChildId(@Param("childId") Long childId);
+
+  @Modifying
+  @Query(
+    value = """
+        INSERT INTO departments.department_leaders (department_id, employee_id)
+        VALUES (:departmentId, :leaderId)
+      """,
+    nativeQuery = true
+  )
+  void addLeaderInDepartment(@Param("departmentId") Long departmentId,
+    @Param("leaderId") Long leaderId);
+
+  @Modifying
+  @Query(
+    nativeQuery = true,
+    value = """
+         DELETE FROM departments.department_leaders
+         WHERE department_id = :departmentId;
+      """)
+  void deleteDepartmentWithLeaderByDepartmentId(@Param("departmentId") Long departmentId);
 }
