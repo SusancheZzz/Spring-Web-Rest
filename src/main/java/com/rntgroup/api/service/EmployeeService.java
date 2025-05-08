@@ -51,14 +51,14 @@ public class EmployeeService {
 
   @Transactional
   public EmployeeReadDto hireEmployee(EmployeeSaveDto employeeSaveDto) {
-    var departmentId = employeeSaveDto.getDepartmentId();
+    var departmentId = employeeSaveDto.departmentId();
     var departmentName = getDepartmentName(departmentId);
 
-    if (!checkLeaderPayment(employeeSaveDto.getPayment(), departmentId)) {
+    if (!checkLeaderPayment(employeeSaveDto.payment(), departmentId)) {
       throw new PaymentNotValidException("Employee payment should not exceed that of their boss");
     }
 
-    var foundByPhoneNumber = employeeRepository.findByPhoneNumber(employeeSaveDto.getPhoneNumber());
+    var foundByPhoneNumber = employeeRepository.findByPhoneNumber(employeeSaveDto.phoneNumber());
 
     if (foundByPhoneNumber.isPresent()) {
       throw new UniqueAttributeAlreadyExistException(
@@ -92,11 +92,11 @@ public class EmployeeService {
   @Transactional
   public EmployeeReadDto updateEmployee(EmployeeEditDto employeeEditDto, Long employeeId) {
     var employeeEntity = getEmployeeById(employeeId);
-    var payment = employeeEditDto.getPayment();
+    var payment = employeeEditDto.payment();
 
-    if (employeeEditDto.getIsLeader()) {
+    if (employeeEditDto.isLeader()) {
       var leaderInGroup = employeeRepository.findLeaderInDepartment(
-        employeeEditDto.getDepartmentId());
+        employeeEditDto.departmentId());
 
       if (leaderInGroup.isPresent()) {
         var leader = leaderInGroup.get();
@@ -106,7 +106,7 @@ public class EmployeeService {
         employeeRepository.saveAndFlush(leader);
       }
     } else {
-      if (!checkLeaderPayment(employeeEditDto.getPayment(), employeeEditDto.getDepartmentId())) {
+      if (!checkLeaderPayment(employeeEditDto.payment(), employeeEditDto.departmentId())) {
         throw new PaymentNotValidException("Employee payment should not exceed that of their boss");
       }
     }
@@ -114,7 +114,7 @@ public class EmployeeService {
     var update = employeeMapper.mapEditToEntity(employeeEditDto, employeeEntity);
     update.setPayment(payment);
     employeeRepository.saveAndFlush(update);
-    String departmentName = getDepartmentName(employeeEditDto.getDepartmentId());
+    String departmentName = getDepartmentName(employeeEditDto.departmentId());
 
     return employeeMapper.mapEntityToRead(update, departmentName);
   }

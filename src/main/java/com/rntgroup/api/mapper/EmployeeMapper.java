@@ -11,7 +11,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-
 @Mapper(
   componentModel = "spring",
   imports = {Gender.class, LocalDate.class}
@@ -30,9 +29,9 @@ public interface EmployeeMapper {
   @Mapping(source = "department", target = "departmentName")
   EmployeeReadDto mapEntityToRead(EmployeeEntity entity, String department);
 
-  @Mapping(source = "dto.name", target = "name")
+  @Mapping(source = "name", target = "name")
   @Mapping(source = "departmentId", target = "departmentId")
-  @Mapping(expression = "java(Gender.valueOf(dto.getGender()))", target = "gender")
+  @Mapping(expression = "java(Gender.valueOf(dto.gender()))", target = "gender")
   @Mapping(expression = "java(LocalDate.now())", target = "employmentDate")
   @Mapping(expression = "java(false)", target = "isLeader")
   @Mapping(expression = "java(null)", target = "id")
@@ -41,13 +40,13 @@ public interface EmployeeMapper {
   EmployeeShortInfoDto mapEntityToShortDto(EmployeeEntity entity);
 
   default EmployeeEntity mapEditToEntity(EmployeeEditDto dto, EmployeeEntity employee) {
-    employee.setName(dto.getName());
-    employee.setSurname(dto.getSurname());
-    employee.setPhoneNumber(dto.getPhoneNumber());
-    employee.setDepartmentId(dto.getDepartmentId());
-    employee.setPosition(dto.getPosition());
-    employee.setPayment(dto.getPayment());
-    employee.setIsLeader(dto.getIsLeader());
+    employee.setName(dto.name());
+    employee.setSurname(dto.surname());
+    employee.setPhoneNumber(dto.phoneNumber());
+    employee.setDepartmentId(dto.departmentId());
+    employee.setPosition(dto.position());
+    employee.setPayment(dto.payment());
+    employee.setIsLeader(dto.isLeader());
 
     return employee;
   }

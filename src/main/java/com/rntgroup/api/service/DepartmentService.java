@@ -16,6 +16,7 @@ import com.rntgroup.api.repository.DepartmentRepository;
 import com.rntgroup.api.repository.EmployeeRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +78,7 @@ public class DepartmentService {
 
   @Transactional
   public DepartmentReadDto saveDepartment(DepartmentSaveDto departmentSaveDto) {
-    var departmentName = departmentSaveDto.getName();
+    var departmentName = departmentSaveDto.name();
     var department = departmentRepository.findByName(departmentName);
 
     if (department.isPresent()) {
@@ -85,7 +86,7 @@ public class DepartmentService {
         "Department with name " + departmentName + " already exists");
     }
 
-    long leaderId = departmentSaveDto.getLeaderId();
+    long leaderId = departmentSaveDto.leaderId();
     var leaderOpt = employeeRepository.findEmployeeById(leaderId);
     if (leaderOpt.isEmpty()) {
       throw new EntityNotFoundException("Employee with id = " + leaderId + " not found");
@@ -93,8 +94,8 @@ public class DepartmentService {
 
     var newDepartment = departmentMapper.mapSaveToEntity(departmentSaveDto);
 
-    if (departmentSaveDto.getParentDepartmentId().isPresent()) {
-      var parentId = departmentSaveDto.getParentDepartmentId().get();
+    if (Objects.nonNull(departmentSaveDto.parentDepartmentId())) {
+      var parentId = departmentSaveDto.parentDepartmentId();
       var parentDepartment = departmentRepository.findById(parentId);
 
       if (parentDepartment.isEmpty()) {
@@ -217,7 +218,7 @@ public class DepartmentService {
 
   public DepartmentMessageDto findDepartmentShortInfo(Long departmentId) {
     var department = findDepartmentById(departmentId);
-    return new DepartmentMessageDto(departmentId, department.getName());
+    return new DepartmentMessageDto(departmentId, department.name());
   }
 
   private DepartmentReadDto getReadDto(DepartmentEntity departmentEntity, Long departmentId,
