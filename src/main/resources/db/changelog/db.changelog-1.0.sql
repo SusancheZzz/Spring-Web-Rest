@@ -58,30 +58,4 @@ CREATE TABLE IF NOT EXISTS departments.department_leaders
     employee_id   BIGINT REFERENCES employees.employee (id) ON DELETE CASCADE
 );
 
---changeset susanchezzz:7
-CREATE TABLE IF NOT EXISTS employees.account
-(
-    id          BIGSERIAL PRIMARY KEY,
-    employee_id BIGINT UNIQUE REFERENCES employees.employee (id) ON DELETE CASCADE,
-    username    VARCHAR(64)  NOT NULL UNIQUE CHECK ( length(trim(username)) > 3 ),
-    email       VARCHAR(128) NOT NULL CHECK ( length(trim(email)) > 3 ) UNIQUE,
-    password    VARCHAR(64)  NOT NULL CHECK ( length(trim(password)) > 3 )
-);
-
---changeset susanchezzz:8
-CREATE TABLE IF NOT EXISTS employees.authority
-(
-    id          BIGSERIAL PRIMARY KEY,
-    u_authority VARCHAR NOT NULL CHECK ( length(trim(u_authority)) > 0 ) UNIQUE
-);
-
---changeset susanchezzz:9
-CREATE TABLE IF NOT EXISTS employees.account_authority
-(
-    id           BIGSERIAL PRIMARY KEY,
-    employee_id  BIGINT NOT NULL REFERENCES employees.account (employee_id),
-    authority_id BIGINT NOT NULL REFERENCES employees.authority (id),
-    constraint uk_account_authority unique (employee_id, authority_id)
-);
-
 

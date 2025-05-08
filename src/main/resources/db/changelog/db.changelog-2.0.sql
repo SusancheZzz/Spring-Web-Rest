@@ -76,31 +76,3 @@ VALUES (1, 1, 1),
        (5, 5, 12);
 
 SELECT SETVAL('departments.department_leaders_id_seq', 5);
-
---changeset susanchezzz:6
-INSERT INTO employees.account
-    (id, employee_id, username, email, password)
-VALUES (1, 1, 'admin', 'admin@gmail.com', 'admin'),
-       (2, 2, 'igorev', 'igorev@gmail.com', 'igorev'),
-       (3, 3, 'ivanov', 'ivanov@gmail.com', 'ivanov'),
-       (4, 4, 'petrov', 'petrov@gmail.com', 'petrov'),
-       (5, 5, 'semyonov', 'semyonov@gmail.com', 'semyonov');
-
---changeset susanchezzz:7
-INSERT INTO employees.authority
-    (id, u_authority)
-VALUES (1, 'ADMIN'),
-       (2, 'USER');
-
-SELECT SETVAL('employees.authority_id_seq', 2);
-
---changeset susanchezzz:8
-INSERT INTO employees.account_authority
-    (id, employee_id, authority_id)
-VALUES (1, 1, 1),
-       (2, 2, 2),
-       (3, 3, 2),
-       (4, 4, 2),
-       (5, 5, 2);
-
-SELECT SETVAL('employees.account_authority_id_seq', 5);
