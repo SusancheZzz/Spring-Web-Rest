@@ -1,5 +1,8 @@
-package com.rntgroup.api.exception;
+package com.rntgroup.api.controller.advice;
 
+import com.rntgroup.api.exception.DepartmentStillHasEmployeesException;
+import com.rntgroup.api.exception.PaymentNotValidException;
+import com.rntgroup.api.exception.UniqueAttributeAlreadyExistException;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
@@ -7,12 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.rntgroup.api.controller.advice.ErrorCode.BUSINESS_ERROR;
+import static com.rntgroup.api.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
+import static com.rntgroup.api.controller.advice.ErrorCode.INTERNAL_ERROR;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
-  private static final String BUSINESS_ERROR = "BUSINESS_ERROR";
-  private static final String ENTITY_NOT_FOUND = "ENTITY_NOT_FOUND";
-  private static final String INTERNAL_ERROR = "INTERNAL_ERROR";
 
   @ExceptionHandler(EntityNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)

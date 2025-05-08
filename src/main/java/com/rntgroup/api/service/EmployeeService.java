@@ -5,6 +5,7 @@ import com.rntgroup.api.dto.EmployeeReadDto;
 import com.rntgroup.api.dto.EmployeeSaveDto;
 import com.rntgroup.api.dto.EmployeeShortInfoDto;
 import com.rntgroup.api.entity.EmployeeEntity;
+import com.rntgroup.api.exception.EmployeeNotFoundException;
 import com.rntgroup.api.exception.PaymentNotValidException;
 import com.rntgroup.api.exception.UniqueAttributeAlreadyExistException;
 import com.rntgroup.api.mapper.EmployeeMapper;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class EmployeeService {
 
-  private static final String EMPLOYEE_WITH_ID_NOT_FOUND = "Employee with id: %s not found";
   private final EmployeeRepository employeeRepository;
   private final DepartmentRepository departmentRepository;
   private final EmployeeMapper employeeMapper;
@@ -32,7 +32,7 @@ public class EmployeeService {
     var foundEmployee = employeeRepository.findEmployeeById(employeeId);
 
     if (foundEmployee.isEmpty()) {
-      throw new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId));
+      throw new EmployeeNotFoundException(employeeId);
     }
 
     var employee = foundEmployee.get();
@@ -41,7 +41,7 @@ public class EmployeeService {
     var departmentId = employee.getDepartmentId();
 
     if (quiteDate.isPresent()) {
-      throw new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId));
+      throw new EmployeeNotFoundException(employeeId);
     }
 
     var department = getDepartmentName(departmentId);
@@ -49,7 +49,7 @@ public class EmployeeService {
     return employeeMapper.mapEntityToRead(employee, department);
   }
 
-  @Transactional
+  @Transactional(timeout = 30)
   public EmployeeReadDto hireEmployee(EmployeeSaveDto employeeSaveDto) {
     var departmentId = employeeSaveDto.departmentId();
     var departmentName = getDepartmentName(departmentId);
@@ -71,12 +71,12 @@ public class EmployeeService {
     return employeeMapper.mapEntityToRead(employee, departmentName);
   }
 
-  @Transactional
+  @Transactional(timeout = 30)
   public EmployeeReadDto deleteEmployee(Long employeeId) {
     var employee = employeeRepository.findEmployeeById(employeeId);
 
     if (employee.isEmpty()) {
-      throw new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId));
+      throw new EmployeeNotFoundException(employeeId);
     }
 
     var employeeEntity = employee.get();
@@ -89,7 +89,7 @@ public class EmployeeService {
     return employeeMapper.mapEntityToRead(employeeEntity, departmentName);
   }
 
-  @Transactional
+  @Transactional(timeout = 30)
   public EmployeeReadDto updateEmployee(EmployeeEditDto employeeEditDto, Long employeeId) {
     var employeeEntity = getEmployeeById(employeeId);
     var payment = employeeEditDto.payment();
@@ -170,7 +170,7 @@ public class EmployeeService {
   private EmployeeEntity getEmployeeById(Long employeeId) {
     return employeeRepository.findEmployeeById(employeeId)
       .orElseThrow(
-        () -> new EntityNotFoundException(EMPLOYEE_WITH_ID_NOT_FOUND.formatted(employeeId)));
+        () -> new EmployeeNotFoundException(employeeId));
   }
 }
 

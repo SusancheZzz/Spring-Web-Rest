@@ -1,9 +1,9 @@
-package com.rntgroup.api.exception;
+package com.rntgroup.api.controller.advice;
 
 import java.time.LocalDateTime;
 
 public record ErrorResponse(
-  String code,
+  ErrorCode code,
   String message,
   LocalDateTime timestamp
 ) {

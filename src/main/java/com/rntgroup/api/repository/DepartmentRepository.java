@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
-@Repository("departmentRepository")
+@Repository
 public interface DepartmentRepository extends JpaRepository<DepartmentEntity, Long> {
 
   Optional<DepartmentEntity> findByName(String name);
