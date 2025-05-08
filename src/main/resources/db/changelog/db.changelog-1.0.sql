@@ -58,4 +58,18 @@ CREATE TABLE IF NOT EXISTS departments.department_leaders
     employee_id   BIGINT REFERENCES employees.employee (id) ON DELETE CASCADE
 );
 
+--changeset susanchezzz:7
+CREATE SCHEMA IF NOT EXISTS security;
+
+--changeset susanchezzz:8
+CREATE TABLE IF NOT EXISTS security.account
+(
+    id          BIGSERIAL PRIMARY KEY,
+    employee_id BIGINT UNIQUE REFERENCES employees.employee (id) ON DELETE CASCADE,
+    username    VARCHAR(64)  NOT NULL UNIQUE CHECK ( length(trim(username)) > 3 ),
+    email       VARCHAR(128) NOT NULL CHECK ( length(trim(email)) > 3 ) UNIQUE,
+    password    VARCHAR(64)  NOT NULL CHECK ( length(trim(password)) > 3 ),
+    role VARCHAR(64) NOT NULL CHECK ( length(trim(role)) > 0 )
+);
+
 
