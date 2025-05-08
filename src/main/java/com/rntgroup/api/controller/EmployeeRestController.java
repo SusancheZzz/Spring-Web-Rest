@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface EmployeeRestController {
 
   @Operation(
-    summary = "Get information about employee",
+    summary = "Get information about employee (for all role users)",
     description = "Get information about employee by id"
   )
   @ApiResponses(value = {
@@ -28,6 +29,7 @@ public interface EmployeeRestController {
     @ApiResponse(responseCode = "404", description = "Employee not found")
   })
   @GetMapping("employee/{id}")
+  @Secured({"ADMIN", "USER"})
   ResponseEntity<EmployeeReadDto> getEmployee(
     @PathVariable("id")
     @Positive(message = "Employee id must be positive")
@@ -35,43 +37,55 @@ public interface EmployeeRestController {
   );
 
   @Operation(
-    summary = "Hire a worker",
+    summary = "Hire a worker (only for role ADMIN)",
     description = "Hire a new worker with department indication"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Employee saved successfully"),
     @ApiResponse(responseCode = "404", description = "Department not found"),
-    @ApiResponse(responseCode = "400", description = "Phone number already registered")
+    @ApiResponse(responseCode = "400", description = "Phone number already registered"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PostMapping("employee")
+  @Secured("ADMIN")
   ResponseEntity<EmployeeReadDto> saveEmployee(
     @RequestBody @Valid @Parameter(description = "Save DTO") EmployeeSaveDto employeeSaveDto
   );
 
   @Operation(
-    summary = "Delete an employee",
+    summary = "Delete an employee (only for role ADMIN)",
     description = "Employee deleting by ID"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Employee delete successfully"),
-    @ApiResponse(responseCode = "404", description = "Employee not found")
+    @ApiResponse(responseCode = "404", description = "Employee not found"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @DeleteMapping("employee/{id}")
+  @Secured("ADMIN")
   ResponseEntity<EmployeeReadDto> deleteEmployee(
     @PathVariable("id") @Positive(message = "Employee id must be positive") Long id
   );
 
   @Operation(
-    summary = "Update employee info",
+    summary = "Update employee info (only for role ADMIN)",
     description = "Changing information about a worker, the ability to make him "
       + "a department leader or move him to another department"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Employee update successfully"),
     @ApiResponse(responseCode = "404", description = "Employee not found"),
-    @ApiResponse(responseCode = "400", description = "Phone number already registered")
+    @ApiResponse(responseCode = "400", description = "Phone number already registered"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PutMapping("employee/{id}")
+  @Secured("ADMIN")
   ResponseEntity<EmployeeReadDto> updateEmployee(
     @PathVariable("id")
     @Positive(message = "Employee id must be positive")
