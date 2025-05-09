@@ -76,14 +76,3 @@ VALUES (1, 1, 1),
        (5, 5, 12);
 
 SELECT SETVAL('departments.department_leaders_id_seq', 5);
-
---changeset susanchezzz:6
-INSERT INTO security.account
-(id, employee_id, username, role, email, password)
-VALUES (1, 1, 'admin', 'ADMIN', 'admin@gmail.com', 'admin'),
-       (2, 2, 'igorev', 'USER', 'igorev@gmail.com', 'igorev'),
-       (3, 3, 'ivanov', 'USER', 'ivanov@gmail.com', 'ivanov'),
-       (4, 4, 'petrov', 'USER', 'petrov@gmail.com', 'petrov'),
-       (5, 5, 'semyonov', 'USER', 'semyonov@gmail.com', 'semyonov');
-
-SELECT SETVAL('security.account_id_seq', 5);
