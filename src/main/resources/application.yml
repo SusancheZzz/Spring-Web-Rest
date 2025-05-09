@@ -22,3 +22,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
+token:
+  signing:
+    key: NTNBNzNFNUYxQzRFMEEyRDNCNUYyRDc4NEU2QTFCNDIzRDZGMjQ3RDFGNkU1QzNBNTk2RDYzNUE3NTMyNzg1NQ==
+
