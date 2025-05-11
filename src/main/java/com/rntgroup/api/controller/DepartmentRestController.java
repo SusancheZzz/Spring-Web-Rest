@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface DepartmentRestController {
 
   @Operation(
-    summary = "Getting department information by ID",
+    summary = "Getting department information by ID (for all role users)",
     description = "Getting department information containing name, "
       + "creation date, leader name and employees number of department"
   )
@@ -38,7 +38,7 @@ public interface DepartmentRestController {
   );
 
   @Operation(
-    summary = "Getting department information by name",
+    summary = "Getting department information by name (for all role users)",
     description = "Getting department information containing name, "
       + "creation date, leader name and employees number of department"
   )
@@ -52,12 +52,15 @@ public interface DepartmentRestController {
   );
 
   @Operation(
-    summary = "New department registration",
+    summary = "New department registration (only for role ADMIN)",
     description = "New department registration and getting read DTO after that"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "201", description = "Department successfully registered"),
-    @ApiResponse(responseCode = "400", description = "There are some problems in DTO's fields")
+    @ApiResponse(responseCode = "400", description = "There are some problems in DTO's fields"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PostMapping
   ResponseEntity<DepartmentReadDto> createDepartment(
@@ -67,13 +70,16 @@ public interface DepartmentRestController {
   );
 
   @Operation(
-    summary = "Department deleting",
+    summary = "Department deleting (only for role ADMIN)",
     description = "Delete existing department that has no employees by ID"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Department delete successfully"),
     @ApiResponse(responseCode = "404", description = "Department with declared id not found"),
-    @ApiResponse(responseCode = "400", description = "Department still has employees")
+    @ApiResponse(responseCode = "400", description = "Department still has employees"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @DeleteMapping("/{id}")
   ResponseEntity<DepartmentReadDto> deleteDepartment(
@@ -81,13 +87,16 @@ public interface DepartmentRestController {
   );
 
   @Operation(
-    summary = "Update department with declared ID",
+    summary = "Update department with declared ID (only for role ADMIN)",
     description = "Update department with id by edit dto"
   )
   @ApiResponses(value = {
     @ApiResponse(responseCode = "200", description = "Department update successfully"),
     @ApiResponse(responseCode = "404", description = "Department not found by declared ID"),
-    @ApiResponse(responseCode = "400", description = "Specified name is not unique")
+    @ApiResponse(responseCode = "400", description = "Specified name is not unique"),
+    @ApiResponse(responseCode = "403", description =
+      "Insufficient permissions to perform this operation"),
+    @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PutMapping("/{id}")
   ResponseEntity<DepartmentReadDto> updateDepartment(

@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5436/rest-db
-    username: user
-    password: user
+    username: ${DB_USERNAME:username}
+    password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -21,4 +21,9 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+token:
+  signing:
+    ttl: 3_600_000
+    key: ${TOKEN_SECRET_KEY:default-secret-key}
 

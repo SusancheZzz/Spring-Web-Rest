@@ -57,5 +57,3 @@ CREATE TABLE IF NOT EXISTS departments.department_leaders
     department_id BIGINT REFERENCES departments.department (id) ON DELETE CASCADE,
     employee_id   BIGINT REFERENCES employees.employee (id) ON DELETE CASCADE
 );
-
-
