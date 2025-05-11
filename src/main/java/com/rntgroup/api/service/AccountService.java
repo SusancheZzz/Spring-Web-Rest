@@ -44,7 +44,7 @@ public class AccountService {
   @Secured("ADMIN")
   public Boolean setAdminRoleOfUserByUsername(String username) {
     var account = getAccountByUsername(username);
-    account.setRole(Role.ADMIN);
+    account.setRole(Role.ROLE_ADMIN);
     accountRepository.save(account);
     return true;
   }

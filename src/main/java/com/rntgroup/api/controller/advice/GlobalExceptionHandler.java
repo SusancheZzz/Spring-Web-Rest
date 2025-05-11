@@ -1,12 +1,5 @@
 package com.rntgroup.api.controller.advice;
 
-import static com.rntgroup.api.controller.advice.ErrorCode.ALREADY_EXISTS;
-import static com.rntgroup.api.controller.advice.ErrorCode.BUSINESS_ERROR;
-import static com.rntgroup.api.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
-import static com.rntgroup.api.controller.advice.ErrorCode.FORBIDDEN_RESOURCE;
-import static com.rntgroup.api.controller.advice.ErrorCode.INTERNAL_ERROR;
-import static com.rntgroup.api.controller.advice.ErrorCode.USER_NOT_FOUND;
-
 import com.rntgroup.api.exception.AccountWithAlreadyExistsException;
 import com.rntgroup.api.exception.DepartmentStillHasEmployeesException;
 import com.rntgroup.api.exception.PaymentNotValidException;
@@ -19,6 +12,13 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import static com.rntgroup.api.controller.advice.ErrorCode.ALREADY_EXISTS;
+import static com.rntgroup.api.controller.advice.ErrorCode.BUSINESS_ERROR;
+import static com.rntgroup.api.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
+import static com.rntgroup.api.controller.advice.ErrorCode.FORBIDDEN_RESOURCE;
+import static com.rntgroup.api.controller.advice.ErrorCode.INTERNAL_ERROR;
+import static com.rntgroup.api.controller.advice.ErrorCode.USER_NOT_FOUND;
 
 
 @RestControllerAdvice

@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +33,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "404", description = "Department not found")
   })
   @GetMapping("/{id}")
-  @Secured({"ADMIN", "USER"})
   ResponseEntity<DepartmentReadDto> findDepartmentById(
     @PathVariable("id") @Positive @Parameter(description = "Department ID") Long id
   );
@@ -49,7 +47,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "404", description = "Department not found")
   })
   @GetMapping("/name/{name}")
-  @Secured({"ADMIN", "USER"})
   ResponseEntity<DepartmentReadDto> findDepartmentByName(
     @PathVariable("name") @NotBlank @Parameter(description = "Department name") String name
   );
@@ -66,7 +63,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PostMapping
-  @Secured("ADMIN")
   ResponseEntity<DepartmentReadDto> createDepartment(
     @RequestBody
     @Valid
@@ -86,7 +82,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @DeleteMapping("/{id}")
-  @Secured("ADMIN")
   ResponseEntity<DepartmentReadDto> deleteDepartment(
     @PathVariable("id") @Positive @Parameter(description = "Department id") Long id
   );
@@ -104,7 +99,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "401", description = "Unauthorized account")
   })
   @PutMapping("/{id}")
-  @Secured("ADMIN")
   ResponseEntity<DepartmentReadDto> updateDepartment(
     @PathVariable("id") @Positive @Parameter(description = "ID of updated department") Long id,
     @RequestBody @Valid @Parameter(description = "DTO for update") DepartmentEditDto department
@@ -119,7 +113,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "404", description = "Department not found")
   })
   @GetMapping("{id}/payment")
-  @Secured({"ADMIN", "USER"})
   ResponseEntity<CommonPaymentForDepartment> getPayment(
     @PathVariable("id") @Positive @Parameter(description = "Department ID") Long id
   );
@@ -133,7 +126,6 @@ public interface DepartmentRestController {
     @ApiResponse(responseCode = "404", description = "Department not found")
   })
   @GetMapping("{id}/employees")
-  @Secured({"ADMIN", "USER"})
   ResponseEntity<List<EmployeeShortInfoDto>> getEmployees(
     @PathVariable("id") @Positive @Parameter(description = "Department ID") Long id
   );

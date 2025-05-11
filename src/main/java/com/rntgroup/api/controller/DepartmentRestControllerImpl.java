@@ -14,6 +14,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   private final DepartmentService departmentService;
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   public ResponseEntity<DepartmentReadDto> findDepartmentById(
     @PathVariable("id") @Positive Long id
   ) {
@@ -35,6 +37,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   public ResponseEntity<DepartmentReadDto> findDepartmentByName(
     @PathVariable("name") @NotBlank String name
   ) {
@@ -43,6 +46,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<DepartmentReadDto> createDepartment(
     @RequestBody @Valid DepartmentSaveDto department
   ) {
@@ -51,6 +55,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<DepartmentReadDto> deleteDepartment(
     @PathVariable("id") @Positive Long id
   ) {
@@ -59,6 +64,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public ResponseEntity<DepartmentReadDto> updateDepartment(
     @PathVariable("id") @Positive @Parameter(description = "ID of updated department") Long id,
     @RequestBody @Valid @Parameter(description = "DTO for update") DepartmentEditDto department
@@ -68,6 +74,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   public ResponseEntity<CommonPaymentForDepartment> getPayment(
     @PathVariable("id") @Positive @Parameter(description = "Department ID") Long id
   ) {
@@ -76,6 +83,7 @@ public class DepartmentRestControllerImpl implements DepartmentRestController {
   }
 
   @Override
+  @PreAuthorize("hasAuthority('ROLE_ADMIN') or hasAuthority('ROLE_USER')")
   public ResponseEntity<List<EmployeeShortInfoDto>> getEmployees(
     @PathVariable("id") @Positive @Parameter(description = "Department ID") Long id
   ) {

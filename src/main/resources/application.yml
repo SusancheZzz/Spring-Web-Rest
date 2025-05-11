@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5436/rest-db
-    username: user
-    password: user
+    username: ${DB_USERNAME:username}
+    password: ${DB_PASSWORD:password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -24,5 +24,6 @@ logging:
 
 token:
   signing:
-    key: NTNBNzNFNUYxQzRFMEEyRDNCNUYyRDc4NEU2QTFCNDIzRDZGMjQ3RDFGNkU1QzNBNTk2RDYzNUE3NTMyNzg1NQ==
+    ttl: 3_600_000
+    key: ${TOKEN_SECRET_KEY:default-secret-key}
 

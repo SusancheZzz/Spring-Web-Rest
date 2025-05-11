@@ -7,7 +7,6 @@ import com.rntgroup.api.entity.AccountEntity;
 import com.rntgroup.api.entity.Role;
 import com.rntgroup.api.exception.EmployeeNotFoundException;
 import com.rntgroup.api.repository.EmployeeRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,7 +35,7 @@ public class AuthenticationService {
       .employee(employee)
       .email(request.email())
       .password(passwordEncoder.encode(request.password()))
-      .role(Role.USER)
+      .role(Role.ROLE_USER)
       .build();
 
     accountService.createAccount(account);
@@ -57,30 +56,4 @@ public class AuthenticationService {
     return new JwtAuthenticationResponse(jwt);
   }
 
-  @PostConstruct
-  private void init() {
-    var adminEmployee = employeeRepository.findById(1L)
-      .orElseThrow(() -> new EmployeeNotFoundException(1L));
-    var userEmployee = employeeRepository.findById(2L)
-      .orElseThrow(() -> new EmployeeNotFoundException(2L));
-
-    var adminAccount = AccountEntity.builder()
-      .username("admin")
-      .employee(adminEmployee)
-      .email("admin@gmail.com")
-      .password(passwordEncoder.encode("admin"))
-      .role(Role.ADMIN)
-      .build();
-
-    var userAccount = AccountEntity.builder()
-      .username("user")
-      .employee(userEmployee)
-      .email("user@gmail.com")
-      .password(passwordEncoder.encode("user"))
-      .role(Role.USER)
-      .build();
-
-    accountService.createAccount(adminAccount);
-    accountService.createAccount(userAccount);
-  }
 }

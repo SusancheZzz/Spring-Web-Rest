@@ -21,6 +21,9 @@ public class JwtService {
   @Value("${token.signing.key}")
   private String jwtSigningKey;
 
+  @Value("${token.signing.ttl}")
+  private Long ttl;
+
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
   }
@@ -36,8 +39,7 @@ public class JwtService {
   }
 
   public boolean isTokenValid(String token, UserDetails userDetails) {
-    final String username = extractUsername(token);
-    return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    return !isTokenExpired(token);
   }
 
   private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -50,7 +52,7 @@ public class JwtService {
       .setClaims(extraClaims)
       .setSubject(userDetails.getUsername())
       .setIssuedAt(new Date(System.currentTimeMillis()))
-      .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+      .setExpiration(new Date(System.currentTimeMillis() + this.ttl))
       .signWith(getSigningKey(), SignatureAlgorithm.HS256)
       .compact();
   }

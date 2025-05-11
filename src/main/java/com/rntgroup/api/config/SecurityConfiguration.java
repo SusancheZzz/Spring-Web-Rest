@@ -1,7 +1,5 @@
 package com.rntgroup.api.config;
 
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-
 import com.rntgroup.api.filter.JwtAuthenticationFilter;
 import com.rntgroup.api.security.RestAuthenticationEntryPoint;
 import com.rntgroup.api.service.AccountService;
@@ -22,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 
 @Configuration
