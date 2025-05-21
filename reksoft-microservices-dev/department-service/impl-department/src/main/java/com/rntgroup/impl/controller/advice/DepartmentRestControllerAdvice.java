@@ -1,5 +1,11 @@
 package com.rntgroup.impl.controller.advice;
 
+import static com.rntgroup.common.error.ErrorCode.BUSINESS_ERROR;
+import static com.rntgroup.common.error.ErrorCode.ENTITY_NOT_FOUND;
+import static com.rntgroup.common.error.ErrorCode.INTERNAL_ERROR;
+import static com.rntgroup.common.error.ErrorCode.VALIDATE_FAILED;
+
+import com.rntgroup.common.error.ErrorResponse;
 import com.rntgroup.impl.exception.DepartmentStillHasEmployeesException;
 import com.rntgroup.impl.exception.DepartmentWithNotFoundException;
 import com.rntgroup.impl.exception.PaymentNotValidException;
@@ -14,11 +20,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import static com.rntgroup.impl.controller.advice.ErrorCode.BUSINESS_ERROR;
-import static com.rntgroup.impl.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
-import static com.rntgroup.impl.controller.advice.ErrorCode.INTERNAL_ERROR;
-import static com.rntgroup.impl.controller.advice.ErrorCode.VALIDATE_FAILED;
 
 
 @RestControllerAdvice
@@ -67,7 +68,7 @@ public class DepartmentRestControllerAdvice {
             LocalDateTime.now())
           );
         }
-      );
+    );
 
     return errors;
   }

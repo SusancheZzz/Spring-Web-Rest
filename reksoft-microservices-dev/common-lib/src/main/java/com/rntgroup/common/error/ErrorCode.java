@@ -1,4 +1,4 @@
-package com.rntgroup.impl.controller.advice;
+package com.rntgroup.common.error;
 
 public enum ErrorCode {
   BUSINESS_ERROR,

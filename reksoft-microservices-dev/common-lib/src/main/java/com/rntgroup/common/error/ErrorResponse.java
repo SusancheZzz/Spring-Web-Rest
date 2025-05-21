@@ -1,4 +1,4 @@
-package com.rntgroup.impl.controller.advice;
+package com.rntgroup.common.error;
 
 import java.time.LocalDateTime;
 
