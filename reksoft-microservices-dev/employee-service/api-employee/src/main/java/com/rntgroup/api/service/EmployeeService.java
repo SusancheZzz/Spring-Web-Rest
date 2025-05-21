@@ -5,6 +5,7 @@ import com.rntgroup.api.dto.EmployeeReadDto;
 import com.rntgroup.api.dto.EmployeeSaveDto;
 import com.rntgroup.api.dto.EmployeeShortInfoDto;
 import java.util.List;
+import java.util.Map;
 
 public interface EmployeeService {
 
@@ -29,4 +30,6 @@ public interface EmployeeService {
   void updateIsLeaderById(boolean isLeader, Long employeeId);
 
   Long getCountDepartmentsOfLeaderById(Long leaderId);
+
+  Map<Long, Integer> getAllCommonPaymentForDepartments(List<Long> departmentsPaymentIds);
 }

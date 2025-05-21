@@ -1,6 +1,6 @@
 package com.rntgroup.impl.controller;
 
-import com.rntgroup.api.controller.DepartmentRestController;
+import com.rntgroup.api.controller.DepartmentApi;
 import com.rntgroup.api.dto.CommonPaymentForDepartment;
 import com.rntgroup.api.dto.DepartmentEditDto;
 import com.rntgroup.api.dto.DepartmentReadDto;
@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/department")
 @RequiredArgsConstructor
 @Validated
-public class DepartmentRestControllerImpl implements DepartmentRestController {
+public class DepartmentRestController implements DepartmentApi {
 
   private final DepartmentService departmentService;
 

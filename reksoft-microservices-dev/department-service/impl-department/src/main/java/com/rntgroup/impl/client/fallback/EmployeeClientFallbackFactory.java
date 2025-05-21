@@ -4,6 +4,7 @@ import com.rntgroup.api.dto.EmployeeShortInfoDto;
 import com.rntgroup.impl.client.EmployeeClient;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.springframework.cloud.openfeign.FallbackFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,12 @@ public class EmployeeClientFallbackFactory implements FallbackFactory<EmployeeCl
       @Override
       public ResponseEntity<Integer> getCommonPaymentForDepartment(Long departmentId) {
         return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+      }
+
+      @Override
+      public ResponseEntity<Map<Long, Integer>> getAllCommonPaymentForDepartments(
+        List<Long> departmentsPaymentIds) {
+        return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.NOT_FOUND);
       }
 
       @Override

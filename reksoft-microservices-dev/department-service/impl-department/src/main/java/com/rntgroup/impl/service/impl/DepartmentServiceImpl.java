@@ -9,6 +9,7 @@ import com.rntgroup.api.dto.EmployeeShortInfoDto;
 import com.rntgroup.api.service.DepartmentService;
 import com.rntgroup.impl.client.EmployeeClient;
 import com.rntgroup.impl.entity.DepartmentEntity;
+import com.rntgroup.impl.entity.DepartmentPaymentEntity;
 import com.rntgroup.impl.entity.Operation;
 import com.rntgroup.impl.exception.DepartmentStillHasEmployeesException;
 import com.rntgroup.impl.exception.DepartmentWithNotFoundException;
@@ -34,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class DepartmentServiceImpl implements DepartmentService {
 
-  private static final int SCHEDULER_DURATION = 60_000;
+  private static final int SCHEDULER_DURATION = 30_000;
 
   private final DepartmentRepository departmentRepository;
   private final DepartmentPaymentRepository departmentPaymentRepository;
@@ -225,10 +226,14 @@ public class DepartmentServiceImpl implements DepartmentService {
   public void updatePaymentInfo() {
     var departmentsPayments = departmentPaymentRepository.findAll();
 
-    for (var departmentPayment : departmentsPayments) {
-      var id = departmentPayment.getId();
-      var commonPayment = employeeClient.getCommonPaymentForDepartment(id).getBody();
-      departmentPayment.setPayment(commonPayment);
+    // Теперь всё происходит атомарно -- единожды раз обращаемся к employee-сервису
+    var departmentIds = departmentsPayments.stream()
+      .map(DepartmentPaymentEntity::getId)
+      .toList();
+    var commonPayments = employeeClient.getAllCommonPaymentForDepartments(departmentIds)
+      .getBody();
+    for (var payment : departmentsPayments) {
+      payment.setPayment(commonPayments.get(payment.getId()));
     }
 
     departmentPaymentRepository.saveAll(departmentsPayments);

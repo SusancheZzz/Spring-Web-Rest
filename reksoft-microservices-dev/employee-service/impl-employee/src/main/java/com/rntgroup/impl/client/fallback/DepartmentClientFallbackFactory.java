@@ -24,5 +24,6 @@ public class DepartmentClientFallbackFactory implements FallbackFactory<Departme
         return new DepartmentMessageDto(0L, DEFAULT_DEPARTMENT_NAME);
       }
     };
+
   }
 }

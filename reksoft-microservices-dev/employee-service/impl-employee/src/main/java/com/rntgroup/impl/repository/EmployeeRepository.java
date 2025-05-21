@@ -55,4 +55,5 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
       UPDATE EmployeeEntity e SET e.isLeader = :isLeader WHERE e.id = :id
     """)
   void updateIsLeaderById(@Param("isLeader") Boolean isLeader, @Param("id") Long id);
+
 }

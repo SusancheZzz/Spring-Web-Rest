@@ -1,10 +1,5 @@
 package com.rntgroup.impl.controller.advice;
 
-import static com.rntgroup.impl.controller.advice.ErrorCode.BUSINESS_ERROR;
-import static com.rntgroup.impl.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
-import static com.rntgroup.impl.controller.advice.ErrorCode.INTERNAL_ERROR;
-import static com.rntgroup.impl.controller.advice.ErrorCode.VALIDATE_FAILED;
-
 import com.rntgroup.impl.exception.DepartmentStillHasEmployeesException;
 import com.rntgroup.impl.exception.DepartmentWithNotFoundException;
 import com.rntgroup.impl.exception.PaymentNotValidException;
@@ -20,40 +15,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.rntgroup.impl.controller.advice.ErrorCode.BUSINESS_ERROR;
+import static com.rntgroup.impl.controller.advice.ErrorCode.ENTITY_NOT_FOUND;
+import static com.rntgroup.impl.controller.advice.ErrorCode.INTERNAL_ERROR;
+import static com.rntgroup.impl.controller.advice.ErrorCode.VALIDATE_FAILED;
+
 
 @RestControllerAdvice
 public class DepartmentRestControllerAdvice {
 
-  @ExceptionHandler(EntityNotFoundException.class)
+
+  @ExceptionHandler({
+    DepartmentWithNotFoundException.class,
+    EntityNotFoundException.class
+  })
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ErrorResponse handleEntityNotFoundException(EntityNotFoundException ex) {
+  public ErrorResponse handleEntityNotFoundException(RuntimeException ex) {
     return new ErrorResponse(ENTITY_NOT_FOUND, ex.getMessage(), LocalDateTime.now());
   }
 
-  @ExceptionHandler(PaymentNotValidException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ErrorResponse handlePaymentNotValidException(PaymentNotValidException ex) {
-    return new ErrorResponse(BUSINESS_ERROR, ex.getMessage(), LocalDateTime.now());
-  }
 
-  @ExceptionHandler(DepartmentStillHasEmployeesException.class)
+  @ExceptionHandler({
+    PaymentNotValidException.class,
+    DepartmentStillHasEmployeesException.class,
+    UniqueAttributeAlreadyExistException.class
+  })
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ErrorResponse handleDepartmentStillHasEmployeesException(
-    DepartmentStillHasEmployeesException ex) {
-    return new ErrorResponse(BUSINESS_ERROR, ex.getMessage(), LocalDateTime.now());
-  }
-
-  @ExceptionHandler(DepartmentWithNotFoundException.class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  public ErrorResponse handleDepartmentWithNotFoundException(
-    DepartmentWithNotFoundException ex) {
-    return new ErrorResponse(ENTITY_NOT_FOUND, ex.getMessage(), LocalDateTime.now());
-  }
-
-  @ExceptionHandler(UniqueAttributeAlreadyExistException.class)
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  public ErrorResponse handleUniqueAttributeAlreadyExistException(
-    UniqueAttributeAlreadyExistException ex) {
+  public ErrorResponse handleBusinessException(RuntimeException ex) {
     return new ErrorResponse(BUSINESS_ERROR, ex.getMessage(), LocalDateTime.now());
   }
 
@@ -79,7 +67,7 @@ public class DepartmentRestControllerAdvice {
             LocalDateTime.now())
           );
         }
-    );
+      );
 
     return errors;
   }

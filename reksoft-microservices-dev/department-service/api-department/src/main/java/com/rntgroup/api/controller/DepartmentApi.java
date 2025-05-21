@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public interface DepartmentRestController {
+public interface DepartmentApi {
 
   @Operation(
     summary = "Getting department information by ID",

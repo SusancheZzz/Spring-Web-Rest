@@ -7,9 +7,6 @@ spring:
 
   application:
     name: department-service
-  cloud:
-    discovery:
-      enabled: true
 
   profiles:
     active: dev
@@ -32,6 +29,27 @@ spring:
       hibernate:
         format_sql: true
 
+
+  cloud:
+    discovery:
+      enabled: true
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 100
+        waitDurationInOpenState: 6000
+        permittedNumberOfCallsInHalfOpenState: 3
+        eventConsumerBufferSize: 50
+
 eureka:
   client:
     service-url:
@@ -45,4 +63,11 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.rntgroup.impl.client: DEBUG
+    feign.Logger: DEBUG
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
 

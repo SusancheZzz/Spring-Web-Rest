@@ -14,9 +14,12 @@ import com.rntgroup.impl.exception.UniqueAttributeAlreadyExistException;
 import com.rntgroup.impl.mapper.EmployeeMapper;
 import com.rntgroup.impl.repository.EmployeeRepository;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +50,9 @@ public class EmployeeServiceImpl implements EmployeeService {
       throw new EmployeeNotFoundException(employeeId);
     }
 
-    var department = getDepartmentName(departmentId);
+    var departmentName = getDepartmentName(departmentId);
 
-    return employeeMapper.mapEntityToRead(employee, department);
+    return employeeMapper.mapEntityToRead(employee, departmentName);
   }
 
   @Override
@@ -134,11 +137,6 @@ public class EmployeeServiceImpl implements EmployeeService {
   }
 
   @Override
-  public Integer getCommonPaymentForDepartment(Long departmentId) {
-    return employeeRepository.commonPaymentForDepartment(departmentId);
-  }
-
-  @Override
   public EmployeeShortInfoDto getLeaderShortInfo(Long departmentId) {
     var employee = employeeRepository.findLeaderInDepartment(departmentId);
 
@@ -157,16 +155,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     return employees.stream().map(employeeMapper::mapEntityToShortDto).toList();
   }
 
-  public String getDepartmentName(Long departmentId) {
-    var response = departmentClient.findDepartmentById(departmentId);
-
-    if (response.getStatusCode().is4xxClientError()) {
-      throw new DepartmentWithNotFoundException("id", String.valueOf(departmentId));
-    }
-
-    return response.getBody().name();
-  }
-
   @Override
   public boolean isExistsEmployeeById(Long employeeId) {
     return Objects.nonNull(getEmployeeById(employeeId));
@@ -181,6 +169,38 @@ public class EmployeeServiceImpl implements EmployeeService {
   @Override
   public Long getCountDepartmentsOfLeaderById(Long leaderId) {
     return employeeRepository.getCountDepartmentsOfLeaderById(leaderId);
+  }
+
+  @Override
+  public Integer getCommonPaymentForDepartment(Long departmentId) {
+    return employeeRepository.commonPaymentForDepartment(departmentId);
+  }
+
+  @Override
+  public Map<Long, Integer> getAllCommonPaymentForDepartments(List<Long> departmentsPaymentIds) {
+    Map<Long, Integer> departmentPayments = new HashMap<>();
+    for (Long paymentId : departmentsPaymentIds) {
+      departmentPayments.put(
+        paymentId,
+        getCommonPaymentForDepartment(paymentId)
+      );
+    }
+    return departmentPayments;
+//    return departmentsPaymentIds.stream()
+//      .collect(Collectors.toMap(
+//          depId -> depId,
+//          this::getCommonPaymentForDepartment
+//        )
+//      );
+  }
+
+  public String getDepartmentName(Long departmentId) {
+    var response = departmentClient.findDepartmentById(departmentId);
+
+    if (response.getStatusCode().is4xxClientError()) {
+      throw new DepartmentWithNotFoundException("id", String.valueOf(departmentId));
+    }
+    return response.getBody().name();
   }
 
   private boolean checkLeaderPayment(Integer employeePayment, Long departmentId) {

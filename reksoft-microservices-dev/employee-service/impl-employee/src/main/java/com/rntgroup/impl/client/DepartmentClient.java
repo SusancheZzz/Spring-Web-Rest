@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(
   value = "department-service",
-  fallbackFactory = DepartmentClientFallbackFactory.class,
-  dismiss404 = true
+  fallbackFactory = DepartmentClientFallbackFactory.class
 )
 public interface DepartmentClient {
 

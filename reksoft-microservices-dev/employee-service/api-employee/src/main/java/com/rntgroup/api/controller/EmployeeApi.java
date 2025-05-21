@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public interface EmployeeRestController {
+public interface EmployeeApi {
 
   @Operation(
     summary = "Get information about employee",
