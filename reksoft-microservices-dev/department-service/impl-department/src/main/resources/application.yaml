@@ -1,0 +1,73 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+  application:
+    name: department-service
+
+  profiles:
+    active: dev
+
+  datasource:
+    url: jdbc:postgresql://localhost:5436/rest-db
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:user}
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+
+
+  cloud:
+    discovery:
+      enabled: true
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: TIME_BASED
+        slidingWindowSize: 15
+        minimumNumberOfCalls: 10
+        failureRateThreshold: 100
+        waitDurationInOpenState: 6000
+        permittedNumberOfCallsInHalfOpenState: 3
+        eventConsumerBufferSize: 50
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 20
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.rntgroup.impl.client: DEBUG
+    feign.Logger: DEBUG
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+
