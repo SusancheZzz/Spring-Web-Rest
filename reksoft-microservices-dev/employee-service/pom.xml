@@ -114,6 +114,11 @@
         <artifactId>mapstruct</artifactId>
         <version>${mapstruct.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.springframework.kafka</groupId>
+        <artifactId>spring-kafka</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

@@ -11,7 +11,9 @@ import com.rntgroup.impl.exception.DepartmentWithNotFoundException;
 import com.rntgroup.impl.exception.EmployeeNotFoundException;
 import com.rntgroup.impl.exception.PaymentNotValidException;
 import com.rntgroup.impl.exception.UniqueAttributeAlreadyExistException;
+import com.rntgroup.impl.mapper.DepartmentMapper;
 import com.rntgroup.impl.mapper.EmployeeMapper;
+import com.rntgroup.impl.repository.DepartmentSnapshotRepository;
 import com.rntgroup.impl.repository.EmployeeRepository;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -31,8 +33,11 @@ public class EmployeeServiceImpl implements EmployeeService {
   private final EmployeeRepository employeeRepository;
   private final DepartmentClient departmentClient;
   private final EmployeeMapper employeeMapper;
+  private final DepartmentMapper departmentMapper;
+  private final DepartmentSnapshotRepository departmentSnapshotRepository;
 
   @Override
+  @Transactional(timeout = 30)
   public EmployeeReadDto getEmployeeInfo(Long employeeId) {
     var foundEmployee = employeeRepository.findEmployeeById(employeeId);
 
@@ -185,21 +190,27 @@ public class EmployeeServiceImpl implements EmployeeService {
       );
     }
     return departmentPayments;
-//    return departmentsPaymentIds.stream()
-//      .collect(Collectors.toMap(
-//          depId -> depId,
-//          this::getCommonPaymentForDepartment
-//        )
-//      );
   }
 
   public String getDepartmentName(Long departmentId) {
-    var response = departmentClient.findDepartmentById(departmentId);
+    var department = departmentSnapshotRepository.findById(departmentId);
 
-    if (response.getStatusCode().is4xxClientError()) {
+    if (department.isPresent()) {
+      var name = department.get().getName();
+      return name;
+    }
+
+    var departmentResponseEntity = departmentClient.findDepartmentById(departmentId);
+
+    if (departmentResponseEntity.getStatusCode().is4xxClientError()) {
       throw new DepartmentWithNotFoundException("id", String.valueOf(departmentId));
     }
-    return response.getBody().name();
+
+    var departmentMessage = departmentResponseEntity.getBody();
+    var departmentSnapshot = departmentMapper.mapMessageDtoToEntity(departmentMessage);
+    departmentSnapshotRepository.saveAndFlush(departmentSnapshot);
+
+    return departmentMessage.name();
   }
 
   private boolean checkLeaderPayment(Integer employeePayment, Long departmentId) {

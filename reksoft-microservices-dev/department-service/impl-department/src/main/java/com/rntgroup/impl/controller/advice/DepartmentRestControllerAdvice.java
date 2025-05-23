@@ -69,7 +69,6 @@ public class DepartmentRestControllerAdvice {
           );
         }
     );
-
     return errors;
   }
 }

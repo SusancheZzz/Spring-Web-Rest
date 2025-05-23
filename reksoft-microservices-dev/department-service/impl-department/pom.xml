@@ -79,6 +79,12 @@
       <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
     </dependency>
 
+    <!--Messaging-->
+    <dependency>
+      <groupId>org.springframework.kafka</groupId>
+      <artifactId>spring-kafka</artifactId>
+    </dependency>
+
     <!--Util-->
     <dependency>
       <groupId>org.projectlombok</groupId>

@@ -15,6 +15,8 @@ import com.rntgroup.impl.exception.DepartmentStillHasEmployeesException;
 import com.rntgroup.impl.exception.DepartmentWithNotFoundException;
 import com.rntgroup.impl.exception.UniqueAttributeAlreadyExistException;
 import com.rntgroup.impl.listener.event.AuditObjectEvent;
+import com.rntgroup.impl.listener.event.DepartmentMessageEvent;
+import com.rntgroup.impl.listener.event.DepartmentMessageEvent.MessageOperationType;
 import com.rntgroup.impl.mapper.DepartmentMapper;
 import com.rntgroup.impl.repository.DepartmentPaymentRepository;
 import com.rntgroup.impl.repository.DepartmentRepository;
@@ -119,6 +121,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     eventPublisher.publishEvent(
       new AuditObjectEvent(newDepartment.getId(), Instant.now(), Operation.CREATE));
+    sendMessage(newDepartment, MessageOperationType.MODIFYING);
 
     return getReadDto(newDepartment);
   }
@@ -165,8 +168,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     if (Objects.nonNull(countDepartmentsOfLeader) && countDepartmentsOfLeader.getBody() == 0) {
       employeeClient.updateIsLeaderById(false, leader.id());
     }
+
     eventPublisher.publishEvent(
       new AuditObjectEvent(department.getId(), Instant.now(), Operation.DELETE));
+    sendMessage(department, MessageOperationType.DELETE);
 
     return getReadDto(department);
   }
@@ -199,6 +204,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     eventPublisher.publishEvent(
       new AuditObjectEvent(updatedDepartment.getId(), Instant.now(), Operation.UPDATE));
+    sendMessage(updatedDepartment, MessageOperationType.MODIFYING);
 
     return getReadDto(department);
   }
@@ -247,5 +253,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     return departmentMapper.mapEntityToRead(departmentEntity, leaderId,
       employeesNumber);
+  }
+
+  private void sendMessage(DepartmentEntity departmentEntity, MessageOperationType operationType) {
+    var messageDto = departmentMapper.mapEntityToMessageDto(departmentEntity);
+    var eventObject = new DepartmentMessageEvent(messageDto, operationType);
+    eventPublisher.publishEvent(eventObject);
   }
 }
