@@ -16,7 +16,7 @@ spring:
 
   liquibase:
     enabled: true
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: classpath:/db/changelog/db.employee-changelog-master.yaml
 
   jpa:
     show-sql: true
@@ -39,9 +39,9 @@ resilience4j:
         slidingWindowType: TIME_BASED
         slidingWindowSize: 15
         minimumNumberOfCalls: 10
-        failureRateThreshold: 100
+        failureRateThreshold: 75
         waitDurationInOpenState: 6000
-        permittedNumberOfCallsInHalfOpenState: 3
+        permittedNumberOfCallsInHalfOpenState: 5
         eventConsumerBufferSize: 50
 
 eureka:

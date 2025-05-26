@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.rntgroup</groupId>
+  <artifactId>migration-service</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <postgres-driver.version>42.7.1</postgres-driver.version>
+    <liquibase.version>4.27.0</liquibase.version>
+  </properties>
+
+  <modules>
+    <module>../department-service/db-department</module>
+    <module>../employee-service/db-employee</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.rntgroup</groupId>
+      <artifactId>db-employee</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.rntgroup</groupId>
+      <artifactId>db-department</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+</project>

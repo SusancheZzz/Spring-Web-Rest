@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset susanchezzz:55
+--changeset susanchezzz:33
 INSERT INTO employees.employee
 (id, surname, name, patronymic, gender, birthday, phone_number, department_id, employment_date,
  position, payment, is_leader)

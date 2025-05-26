@@ -11,10 +11,46 @@
   </parent>
 
   <artifactId>db-department</artifactId>
+  <packaging>jar</packaging>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgres-driver.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-maven-plugin</artifactId>
+        <version>4.27.0</version>
+        <configuration>
+          <changeLogFile>src/main/resources/db/changelog/db.department-changelog-master.yaml</changeLogFile>
+          <url>jdbc:postgresql://localhost:5436/rest-db</url>
+          <username>${DB_USERNAME}</username>
+          <password>${DB_PASSWORD}</password>
+          <driver>org.postgresql.Driver</driver>
+          <defaultSchemaName>departments</defaultSchemaName>
+          <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>update</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

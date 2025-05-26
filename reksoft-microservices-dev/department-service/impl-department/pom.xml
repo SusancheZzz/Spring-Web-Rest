@@ -35,6 +35,12 @@
       <artifactId>common-lib</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.rntgroup</groupId>
+      <artifactId>api-employee</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
 
     <!--Web-->
     <dependency>
@@ -50,10 +56,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.liquibase</groupId>
-      <artifactId>liquibase-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -95,12 +97,7 @@
       <groupId>org.mapstruct</groupId>
       <artifactId>mapstruct</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.rntgroup</groupId>
-      <artifactId>api-employee</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-      <scope>compile</scope>
-    </dependency>
+
   </dependencies>
 
   <build>

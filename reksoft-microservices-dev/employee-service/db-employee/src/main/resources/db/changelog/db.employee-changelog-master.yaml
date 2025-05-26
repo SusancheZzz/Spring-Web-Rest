@@ -1,9 +1,9 @@
 databaseChangeLog:
   - include:
-      file: db.001-create-schema.sql
+      file: db.001-create.sql
       relativeToChangelogFile: true
   - include:
-      file: db.002-init-data.sql
+      file: db.002-init.sql
       relativeToChangelogFile: true
   - include:
       file: db.003-snapshot.sql

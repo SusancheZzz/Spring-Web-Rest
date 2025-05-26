@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset susanchezzz:1
+--changeset susanchezzz:6
 INSERT INTO departments.department (id, name, created_at, is_main)
 VALUES (1, 'Main department', '1999-03-12', true),
        (2, 'Sales Department', '1999-03-12', false),
@@ -12,7 +12,7 @@ VALUES (1, 'Main department', '1999-03-12', true),
 
 SELECT SETVAL('departments.department_id_seq', 7);
 
---changeset susanchezzz:2
+--changeset susanchezzz:7
 INSERT INTO departments.parent_child_departments
     (id, parent_department_id, child_department_id)
 VALUES (1, 1, 2),
@@ -26,12 +26,12 @@ VALUES (1, 1, 2),
 
 SELECT SETVAL('departments.parent_child_departments_id_seq', 8);
 
---changeset susanchezzz:3
+--changeset susanchezzz:8
 INSERT INTO departments.payment_in_department_info(department_id)
 SELECT d.id
 FROM departments.department d;
 
---changeset susanchezzz:4
+--changeset susanchezzz:9
 INSERT INTO departments.department_leaders
     (id, department_id, employee_id)
 VALUES (1, 1, 1),

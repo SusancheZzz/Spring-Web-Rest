@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS employees.employee
     gender          VARCHAR(16)  NOT NULL,
     birthday        DATE         NOT NULL,
     phone_number    VARCHAR(64)  NOT NULL UNIQUE,
-    department_id   BIGINT REFERENCES departments.department (id) ON DELETE CASCADE,
+    department_id   BIGINT       NOT NULL,
     employment_date DATE         NOT NULL,
     quite_date      DATE,
     position        VARCHAR(128) NOT NULL,
