@@ -17,6 +17,7 @@
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <preliquibase.version>1.5.1</preliquibase.version>
   </properties>
 
   <dependencies>
@@ -25,10 +26,46 @@
       <artifactId>postgresql</artifactId>
       <version>${postgres-driver.version}</version>
     </dependency>
+    <dependency>
+      <groupId>net.lbruun.springboot</groupId>
+      <artifactId>preliquibase-spring-boot-starter</artifactId>
+      <version>${preliquibase.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <sql driver="org.postgresql.Driver"
+                  url="jdbc:postgresql://localhost:5436/rest-db"
+                  userid="user"
+                  password="user"
+                  src="src/main/resources/db/preliquibase/postgresql.sql"
+                  onerror="abort"
+                  delimiter=";"/>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgres-driver.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>org.liquibase</groupId>
         <artifactId>liquibase-maven-plugin</artifactId>
@@ -36,8 +73,10 @@
         <configuration>
           <changeLogFile>src/main/resources/db/changelog/db.department-changelog-master.yaml</changeLogFile>
           <url>jdbc:postgresql://localhost:5436/rest-db</url>
-          <username>${DB_USERNAME}</username>
-          <password>${DB_PASSWORD}</password>
+<!--          <username>${DB_USERNAME}</username>-->
+<!--          <password>${DB_PASSWORD}</password>-->
+          <username>user</username>
+          <password>user</password>
           <driver>org.postgresql.Driver</driver>
           <defaultSchemaName>departments</defaultSchemaName>
           <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>

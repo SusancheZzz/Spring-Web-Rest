@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ConsumerFromDepartmentService {
+public class ConsumerFromDepartmentListener {
 
   private final DepartmentSnapshotService departmentSnapshotService;
 

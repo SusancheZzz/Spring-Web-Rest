@@ -9,12 +9,15 @@ import com.rntgroup.impl.entity.Gender;
 import java.time.LocalDate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 @Mapper(
   componentModel = "spring",
   imports = {Gender.class, LocalDate.class}
 )
 public interface EmployeeMapper {
+
+  EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
   @Mapping(source = "entity.id", target = "id")
   @Mapping(source = "entity.name", target = "name")

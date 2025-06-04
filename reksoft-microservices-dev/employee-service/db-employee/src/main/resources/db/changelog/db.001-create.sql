@@ -1,8 +1,5 @@
 --liquibase formatted sql
 
---changeset susanchezzz:11
-CREATE SCHEMA IF NOT EXISTS employees;
-
 --changeset susanchezzz:22
 CREATE TABLE IF NOT EXISTS employees.employee
 (

@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    password: test
+    username: test
+
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.department-changelog-master.yaml
+
+preliquibase:
+  sql-script-references: classpath:/db/preliquibase/postgresql.sql

@@ -21,9 +21,6 @@ CREATE OR REPLACE TRIGGER insert_into_department_payment_after_insertion_into_de
     FOR EACH ROW
 EXECUTE PROCEDURE insert_into_department_payment();
 
---changeset susanchezzz:3
-CREATE SCHEMA IF NOT EXISTS audit;
-
 --changeset susanchezzz:4
 CREATE TABLE IF NOT EXISTS audit.audit_department
 (
