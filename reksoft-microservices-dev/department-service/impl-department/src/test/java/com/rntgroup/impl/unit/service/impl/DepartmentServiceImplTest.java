@@ -30,7 +30,6 @@ class DepartmentServiceImplTest {
   private final DepartmentMapper departmentMapper = DepartmentMapper.INSTANCE;
 
   @Test
-  @Transactional
   void findDepartmentById() {
     var department = departmentService.findDepartmentById(1L);
     var departmentFromRepository = departmentRepository.findById(department.id()).get();
