@@ -5,6 +5,7 @@ import com.rntgroup.api.dto.EmployeeEditDto;
 import com.rntgroup.api.dto.EmployeeReadDto;
 import com.rntgroup.api.dto.EmployeeSaveDto;
 import com.rntgroup.api.service.EmployeeService;
+import com.rntgroup.impl.aspect.annotation.DurationCount;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -38,6 +39,7 @@ public class EmployeeRestController implements EmployeeApi {
   }
 
   @Override
+  @DurationCount
   public ResponseEntity<EmployeeReadDto> saveEmployee(
     @RequestBody @Valid @Parameter(description = "Save DTO") EmployeeSaveDto employeeSaveDto
   ) {
